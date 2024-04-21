@@ -32,10 +32,10 @@ void printv(struct vector *v){
 	int i;
 	printf("[");
 	for (i = 0; i < v->dim-1; i++){
-		printf("%f,", v->vals[i]);
+		printf("%.2f,", v->vals[i]);
 	}
 	// no comma after last entry
-	printf("%f", v->vals[i]);
+	printf("%.2f", v->vals[i]);
 	printf("]");
 }
 
@@ -63,6 +63,15 @@ double v_dot(vector* x, vector* y){
 		sum += x->vals[i]*y->vals[i];	
 	}	
 	return sum;
+}
+
+vector* scalmul(vector* v, double c){
+	int i;
+	vector* w = new_vector(v->dim);
+	for (i=0; i<v->dim; i++){
+		w->vals[i] = (v->vals[i])*c;
+	}
+	return w;
 }
 
 /*
@@ -136,28 +145,10 @@ struct matrix* matmul(matrix* A, matrix* B){
 	return C;
 }
 
-void main(){
-	struct vector* x = new_vector(2);
-	x->vals[0] = 1.;
-	x->vals[1] = 2.;
-	struct vector* y = new_vector(2);
-	y->vals[0] = 3.;
-	y->vals[1] = 2.;
-	struct vector* z = v_add(x,y);
-	printv(z);
-	printf("\n");
-	double dot = v_dot(x,y);
-	printf("%f ", dot);
-	printf("\n");
-
-	matrix* A = new_matrix(2, 2);
-	A->cols[0] = x;
-	A->cols[1] = y;
-	matrix* B = new_matrix(2,2);
-	B->cols[0] = y;
-	B->cols[1] = z;
+struct vector* matvectmul(matrix *A, vector *v){
+	/* Define a nx1 matrix B from v and then use matmul */
+	matrix* B = new_matrix(1, v->dim);
 	matrix* C = matmul(A,B);
-	printM(A);
-	printM(B);
-	printM(C);
+	return C->cols[0]; 
 }
+
