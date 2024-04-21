@@ -32,5 +32,22 @@ void main(){
 	
 	double c = v_dot(x,y);
 	printf("<x,y> = %.2f \n", c);
+
+	/* Matrices and multiplication */
+	matrix *A = new_matrix(2, 3);
+	A->cols[0] = x;
+	A->cols[1] = y;
+	printf("Matrix A = \n");printM(A);printf("\n");
+
+	vector *b = matvectmul(A, z);
+	printf("Multiplying A by [2.,3.] gives ");printv(b);printf("\n\n");
+
+	w->vals[0]=3.;
+	w->vals[1]=-2.;
+	matrix *B = new_matrix(2,2);
+	B->cols[0]=w;
+	B->cols[1]=z;
+	matrix *C = matmul(A,B);
+	printM(A);printf("*\n");printM(B);printf("=\n");printM(C);
 }
 

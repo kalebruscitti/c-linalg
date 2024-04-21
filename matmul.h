@@ -130,7 +130,7 @@ struct matrix* matmul(matrix* A, matrix* B){
 		printf("A's # of cols must equal B's # of rowss!");
 		return NULL;
 	}
-	matrix* C = new_matrix(A->nrows, B->ncols);
+	matrix* C = new_matrix(B->ncols, A->nrows);
 	vector *ci, *aj, *bi;
 	int i,j;
 	for (i = 0; i < B->ncols; i++){
@@ -148,6 +148,7 @@ struct matrix* matmul(matrix* A, matrix* B){
 struct vector* matvectmul(matrix *A, vector *v){
 	/* Define a nx1 matrix B from v and then use matmul */
 	matrix* B = new_matrix(1, v->dim);
+	B->cols[0]=v;
 	matrix* C = matmul(A,B);
 	return C->cols[0]; 
 }
