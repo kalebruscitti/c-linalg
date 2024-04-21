@@ -17,7 +17,7 @@ A practice implementation of linear algebra tools in C
 ## Usage:
 **Defining vectors**
 Example: The code
-```
+```c
 	/* Defining vectors, printing */
 	vector *x = new_vector(3);
 	x->vals[0]=1.; x->vals[1]=2.5; x->vals[2]=0.;
@@ -33,7 +33,7 @@ The vector x = [1.00,2.50,0.00]
 
 **Vector addition, scalar multiples, and dot product**
 Example: the code
-```
+```c
 	vector *y = new_vector(3);
 	y->vals[0]=0.; y->vals[1]=1.; y->vals[2]=1.;
 
@@ -64,7 +64,7 @@ x+y = [1.00,3.50,1.00]
 
 ** Matrices, matrix-vector multiplication and matrix multiplication **
 Example, defining a matrix: the code
-```	
+```c	
 matrix *A = new_matrix(2, 3);
 A->cols[0] = x;
 A->cols[1] = y;
@@ -78,7 +78,7 @@ Matrix A =
 [0.00,1.00]
 ```
 Example, matrix multiplication: the code
-```
+```c
 vector *b = matvectmul(A, z);
 printf("Multiplying A by [2.,3.] gives ");printv(b);printf("\n\n");
 
