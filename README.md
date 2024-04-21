@@ -1,6 +1,19 @@
 # C-LinAlg Library
 A practice implementation of linear algebra tools in C
 
+## Features
+**Finished:**
+- Vector addition, scalar multiplication
+- Dot products
+- Matrix-vector & Matrix-matrix multiplication
+
+**Planned:**
+- Gaussian elimination
+- Eigenvectors && eigenvalues
+- Jordan canonical form
+- Stretch goal: linear programming
+
+
 ## Usage:
 **Defining vectors**
 Example: The code
