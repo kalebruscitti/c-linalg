@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "matmul.h"
+#include "gausselim.h"
 
 void main(){
 	/* Defining vectors, printing */
@@ -49,5 +49,17 @@ void main(){
 	B->cols[1]=z;
 	matrix *C = matmul(A,B);
 	printM(A);printf("*\n");printM(B);printf("=\n");printM(C);
+	printf("\n");
+
+	/* Gaussian elimination */
+	free_matrix(A);
+	A = new_matrix(3,3);
+	A->cols[0] = x;
+	A->cols[1] = new_vector(3);
+	A->cols[2] = y;
+	printM(A);
+	printf("REF of A: \n");
+	A = rowechelon(A, true); 	
+	printM(A);
 }
 
