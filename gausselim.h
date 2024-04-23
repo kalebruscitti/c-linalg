@@ -47,24 +47,26 @@ matrix *rowechelon(matrix *M, bool reduced){
 		for (j=pivot; j < M->nrows; j++){
 			if (Mi->vals[j] != 0){
 				val = Mi->vals[j];
-				k = j;
-				pivot++;
+				if (val != 1){
+					M = scalerow(M, j, (1/val));
+				}
 				if (j!= 0){
 					swaprow(M, pivot, j);
 				}
-				if (val != 1){
-					M = scalerow(M, k, (1/val));
-				}
+				/* since we moved things, refresh Mi */
+				Mi = M->cols[i]; 
 				/* use this to eliminate all others */
-				for (j=0; j < M->nrows; j++){
-					if (j!=k){
-						val = Mi->vals[j];
-						M = addrows(M, k, -1*val, j);
+				for (k=0; k < M->nrows; k++){
+					if (k!=pivot){
+						val = Mi->vals[k];
+						M = addrows(M, pivot, -1*val, k);
 					}
 				}
+				pivot++;
 				break;
 			}
-		}
+
+		}	
 	}
 	return M;
 }
