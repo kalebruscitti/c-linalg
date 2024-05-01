@@ -3,9 +3,9 @@
 
 void main(){
 	srand(time(NULL));
-	int N = 3;
-	int ncols = 4;
-	int nrows = 4;
+	int N = 1;
+	int ncols = 3;
+	int nrows = 3;
 	int i;
 	matrix *M;
 	node *list;	
@@ -15,9 +15,8 @@ void main(){
 		printM(M);
 		printf("\n");
 		list = computeEROs(M);
-		printf("Row Reduced:\n");	
-		M = rowReduce(M, list);
-		printM(M);
+		double det  = determinant(M);
+		printf("det M = %f\n", det);
 	}
 		
 }
