@@ -28,6 +28,15 @@ void free_vector(struct vector *v){
 	free(v);
 }
 
+vector *veccopy(vector *v){
+	vector *w = new_vector(v->dim);
+	int i;
+	for (i=0; i<v->dim; i++){
+		w->vals[i] = v->vals[i];
+	}
+	return w;
+}
+
 void printv(struct vector *v){
 	int i;
 	printf("[");

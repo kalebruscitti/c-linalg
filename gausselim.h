@@ -1,5 +1,7 @@
 #include"matmul.h"
+#include"row_op.c"
 #include<stdbool.h>
+#include<stdio.h>
 
 matrix *swaprow(matrix* M, unsigned int i, unsigned int j){
 	vector* Mi = getrow(M, i);
@@ -33,13 +35,150 @@ matrix *addrows(matrix* M, unsigned int i, double c, unsigned int j){
 	return M;
 }
 
-matrix *rowechelon(matrix *M, bool reduced){
+matrix *applyERO(matrix* M, mat_ERO op){
+	switch (op.type){
+		case 0:
+			printf("undefined ERO\n");
+			break;
+		case 1:
+			M = swaprow(M, op.rows[0], op.rows[1]);
+			break;
+		case 2:
+			M = scalerow(M, op.rows[0], op.scalar);
+			break;
+		case 3:
+			M = addrows(M, op.rows[0], op.scalar, op.rows[1]);
+			break;
+	}
+	return M;
+}
+
+void printOP(mat_ERO op){
+	switch (op.type){
+		case 0:
+			printf("undefined ERO\n");
+			break;
+		case 1:
+			printf("Swapping row %d and %d\n", op.rows[0], op.rows[1]);
+			break;
+		case 2:
+			printf("Scaling row %d by %f\n", op.rows[0], op.scalar);
+			break;
+		case 3:
+			printf("Adding %f times row %d to row %d\n", op.scalar, op.rows[0], op.rows[1]);
+			break;
+	}
+}
+
+matrix *rowReduce(matrix* M, node* list){
+	mat_ERO op;
+	node *head = list;
+	while (head->next != NULL){
+		op = head->op;
+		M = applyERO(M, op);
+		head = head->next;
+	}
+	/* do last node! */
+	op = head->op;
+	M = applyERO(M, op);
+	return M;
+}
+
+matrix *matcpy(matrix *M){
+	matrix *A = new_matrix(M->ncols, M->nrows);
+	int i;
+	int j;
+	vector *Mi;
+	vector *vi = new_vector(M->nrows);
+	for (i=0; i<M->ncols; i++){
+		Mi = M->cols[i];
+		for (j=0; j<Mi->dim; j++){
+			vi->vals[j]=Mi->vals[j];
+			
+		}
+		A->cols[i] = veccopy(vi);
+	}
+	return A;
+}
+
+node *computeEROs(matrix *M){
+	matrix *A = matcpy(M);
+	node *EROlist = new_list();
 	int i;
 	int j;
 	int k;
 	int pivot = 0;
 	double val;
+	vector *Ai;
+	mat_ERO op;
+	for (i=0; i < A->ncols; i++){
+		Ai = A->cols[i];
+		/* find highest non-zero entry in column i 
+		 * and swap it to the top row 	*/
+		for (j=pivot; j < A->nrows; j++){
+			if (Ai->vals[j] != 0){
+				val = Ai->vals[j];
+				if (val != 1){
+					op.type = 2;
+					op.rows[0]=j;
+					op.scalar = (1/val);
+					EROlist = append(op, EROlist);
+					A = scalerow(A,j,(1/val));
+				}
+				if (j!= 0){
+					op.type = 1;
+					op.rows[0] = pivot;
+					op.rows[1] = j;
+					EROlist = append(op, EROlist);
+					A = swaprow(A, pivot, j);
+				}
+				/* since we moved things, refresh Ai */
+				Ai = A->cols[i]; 
+				/* use this to eliminate all others */
+				for (k=0; k < A->nrows; k++){
+					if (k!=pivot){
+						val = Ai->vals[k];
+						op.type = 3;
+						op.rows[0]= pivot;
+						op.rows[1] = k;
+						op.scalar = -1*val;
+						EROlist = append(op, EROlist);
+						A = addrows(A, pivot, -1*val, k);
+					}
+				}
+				pivot++;
+				break;
+			}
+
+		}	
+	}
+	return EROlist;
+}
+
+
+matrix *inverse(matrix *M){
+	if (M->ncols != M->nrows){
+		printf("Non-square matrices are not invertible.");
+		return NULL;
+	}
+	// augmented matrix
+	unsigned int n = M->ncols;
+	matrix *A = new_matrix(2*n,n);
+	int i;
+	for (i=0; i<n; i++){
+		A->cols[i] = M->cols[i];
+
+	}
 	vector *Mi;
+	for (i=n; i<2*n; i++){
+		Mi = new_vector(n);
+		Mi->vals[i-n] = 1;
+		A->cols[i] = Mi;
+	}
+	int j;
+	int k;
+	int pivot = 0;
+	double val;
 	for (i=0; i < M->ncols; i++){
 		Mi = M->cols[i];
 		/* find highest non-zero entry in column i 
@@ -49,9 +188,11 @@ matrix *rowechelon(matrix *M, bool reduced){
 				val = Mi->vals[j];
 				if (val != 1){
 					M = scalerow(M, j, (1/val));
+					A = scalerow(A, j, (1/val));
 				}
 				if (j!= 0){
 					swaprow(M, pivot, j);
+					swaprow(A, pivot, j);
 				}
 				/* since we moved things, refresh Mi */
 				Mi = M->cols[i]; 
@@ -60,6 +201,7 @@ matrix *rowechelon(matrix *M, bool reduced){
 					if (k!=pivot){
 						val = Mi->vals[k];
 						M = addrows(M, pivot, -1*val, k);
+						A = addrows(A, pivot, -1*val, k);
 					}
 				}
 				pivot++;
@@ -68,5 +210,10 @@ matrix *rowechelon(matrix *M, bool reduced){
 
 		}	
 	}
-	return M;
+	// get the augmented half which is the inverse now
+	matrix *Inv = new_matrix(n,n);
+	for (i=0; i<n; i++){
+		Inv->cols[i] = A->cols[i+n];
+	}
+	return Inv;
 }

@@ -59,7 +59,10 @@ void main(){
 	A->cols[2] = y;
 	printM(A);
 	printf("REF of A: \n");
-	A = rowechelon(A, true); 	
-	printM(A);
+	matrix *RA = rowechelon(A, true);
+	printM(RA);
+	printf("Inverse of A: \n");
+	matrix *F= inverse(A); 	
+	printM(F);
 }
 
