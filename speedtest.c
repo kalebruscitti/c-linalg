@@ -15,7 +15,9 @@ void main(){
 		printM(M);
 		printf("\n");
 		list = computeEROs(M);
-		double det  = determinant(M);
+		double det = slow_determinant(M);
+		printf("slow det M = %f\n", det);
+		det  = determinant(M);
 		printf("det M = %f\n", det);
 	}
 		

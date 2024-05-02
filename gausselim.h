@@ -70,19 +70,6 @@ void printOP(mat_ERO op){
 	}
 }
 
-matrix *rowReduce(matrix* M, node* head){
-	mat_ERO op;
-	while (head->next != NULL){
-		op = head->op;
-		M = applyERO(M, op);
-		head = head->next;
-	}
-	/* do last node! */
-	op = head->op;
-	M = applyERO(M, op);
-	return M;
-}
-
 matrix *matcpy(matrix *M){
 	matrix *A = new_matrix(M->ncols, M->nrows);
 	int i;
@@ -98,6 +85,20 @@ matrix *matcpy(matrix *M){
 		A->cols[i] = veccopy(vi);
 	}
 	return A;
+}
+
+matrix *rowReduce(matrix* A, node* head){
+	mat_ERO op;
+	matrix *M = matcpy(A);
+	while (head->next != NULL){
+		op = head->op;
+		M = applyERO(M, op);
+		head = head->next;
+	}
+	/* do last node! */
+	op = head->op;
+	M = applyERO(M, op);
+	return M;
 }
 
 node *computeEROs(matrix *M){
@@ -173,13 +174,62 @@ matrix *inverse(matrix *M){
 	return Id;
 }
 
+matrix *minor(matrix *M,int n,int m){
+	matrix *A = new_matrix(M->ncols-1, M->nrows-1);
+	vector *v = new_vector(M->nrows-1);
+	int i;
+	int j;
+	int k;
+	int l = 0;
+	for (int i=0; i<M->ncols; i++){
+		if (i==n){
+			continue;
+		}
+		k = 0;
+		for (int j=0; j<M->nrows; j++){
+			if (j==m){
+				continue;
+			}
+			v->vals[k]=M->cols[i]->vals[j];
+			k++;
+		}
+		A->cols[l] = veccopy(v);
+		l++;
+	}
+	return A;
+}
+
+double slow_determinant(matrix *M){
+	if (M->ncols != M->nrows){
+		printf("Non-square matrices do not have determinants.");
+	}
+	if (M->ncols == 2){
+		return (M->cols[0]->vals[0])*(M->cols[1]->vals[1])-(M->cols[1]->vals[0])*(M->cols[0]->vals[1]);
+	}
+	/* Do cofactor expansion along the first column */
+	vector *v1 = M->cols[0];
+	int i;
+	double det = 0;
+	for (i=0; i<v1->dim; i++){
+		if (v1->vals[0] == 0){continue;}
+		// 1-((i*1)<<1) = (-1)**i
+		det += (1-((i&1)<<1))*(v1->vals[i])*slow_determinant(minor(M, 0, i)); 
+	}
+	return det;
+}
+
 double determinant(matrix *M){
-	double det = 1;
+	/* Row reduce, compute det of RREF first */ 
 	node *head = computeEROs(M);
+	matrix *R = rowReduce(M, head);
+	double det = slow_determinant(R);
+	if (det == 0){
+		return 0;
+	}
+	/* now apply the row rules in reverse */
 	mat_ERO op;
 	while(head->next != NULL){
 		op = head->op;
-		printOP(op);
 		switch (op.type){
 			case 0:
 				printf("undefined ERO\n");
@@ -193,12 +243,10 @@ double determinant(matrix *M){
 			case 3:
 				break;
 		}
-		printf("det: %f, ", det);
 		head = head->next;
 	}
 	/* don't forget the last op */
 	op = head->op;
-	printOP(op);
 	switch (op.type){
 		case 0:
 			printf("undefined ERO\n");
