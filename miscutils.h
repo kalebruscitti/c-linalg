@@ -25,6 +25,7 @@ matrix *random_matrix(unsigned int ncols, unsigned int nrows){
 	for (i=0; i<ncols; i++){
 		v = random_vector(nrows);
 		M->cols[i] = v;
+		free_vector(v);
 	}
 	return M;
 }

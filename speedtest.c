@@ -3,22 +3,18 @@
 
 void main(){
 	srand(time(NULL));
-	int N = 1;
-	int ncols = 3;
-	int nrows = 3;
+	int N = 10;
+	int ncols = 8;
+	int nrows = 8;
 	int i;
 	matrix *M;
 	node *list;	
 	for (i=0; i<N; i++){
 		M = random_matrix(ncols, nrows);
-		printf("\n");
-		printM(M);
-		printf("\n");
-		list = computeEROs(M);
-		double det = slow_determinant(M);
-		printf("slow det M = %f\n", det);
-		det  = determinant(M);
-		printf("det M = %f\n", det);
+		//printf("\n");
+		//printM(M);
+		//printf("\n");
+		free_matrix(M);
 	}
 		
 }
