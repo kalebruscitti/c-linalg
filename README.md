@@ -6,7 +6,7 @@ A practice implementation of linear algebra tools in C
 - Vector addition, scalar multiplication
 - Dot products
 - Matrix-vector & Matrix-matrix multiplication
-- Gaussian elimination
+- Gaussian elimination, determinants
 
 **Planned:**
 - Eigenvectors && eigenvalues

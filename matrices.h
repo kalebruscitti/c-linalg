@@ -114,6 +114,23 @@ void free_matrix(struct matrix* M){
 	free(M);
 }
 
+matrix *matcpy(matrix *M){
+  matrix *A = new_matrix(M->ncols, M->nrows);
+  int i;
+  int j;
+  vector *Mi;
+  vector *vi = new_vector(M->nrows);
+  for (i=0; i<M->ncols; i++){
+    Mi = M->cols[i];
+    for (j=0; j<Mi->dim; j++){
+      vi->vals[j]=Mi->vals[j];
+      
+    }
+    A->cols[i] = veccopy(vi);
+  }
+  return A;
+}
+
 struct vector* getrow(matrix* M, int k){
 	// return kth row of M
 	vector* mk = new_vector(M->ncols);

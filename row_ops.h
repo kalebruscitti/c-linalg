@@ -46,3 +46,19 @@ node *append(mat_ERO op, node *list){
 	return list;
 }
 
+void printOP(mat_ERO op){
+	switch (op.type){
+		case 0:
+			printf("undefined ERO\n");
+			break;
+		case 1:
+			printf("Swapping row %d and %d\n", op.rows[0], op.rows[1]);
+			break;
+		case 2:
+			printf("Scaling row %d by %f\n", op.rows[0], op.scalar);
+			break;
+		case 3:
+			printf("Adding %f times row %d to row %d\n", op.scalar, op.rows[0], op.rows[1]);
+			break;
+	}
+}

@@ -1,5 +1,5 @@
-#include"matmul.h"
-#include"row_op.c"
+#include"matrices.h"
+#include"row_ops.h"
 #include<stdbool.h>
 #include<stdio.h>
 
@@ -51,40 +51,6 @@ matrix *applyERO(matrix* M, mat_ERO op){
 			break;
 	}
 	return M;
-}
-
-void printOP(mat_ERO op){
-	switch (op.type){
-		case 0:
-			printf("undefined ERO\n");
-			break;
-		case 1:
-			printf("Swapping row %d and %d\n", op.rows[0], op.rows[1]);
-			break;
-		case 2:
-			printf("Scaling row %d by %f\n", op.rows[0], op.scalar);
-			break;
-		case 3:
-			printf("Adding %f times row %d to row %d\n", op.scalar, op.rows[0], op.rows[1]);
-			break;
-	}
-}
-
-matrix *matcpy(matrix *M){
-	matrix *A = new_matrix(M->ncols, M->nrows);
-	int i;
-	int j;
-	vector *Mi;
-	vector *vi = new_vector(M->nrows);
-	for (i=0; i<M->ncols; i++){
-		Mi = M->cols[i];
-		for (j=0; j<Mi->dim; j++){
-			vi->vals[j]=Mi->vals[j];
-			
-		}
-		A->cols[i] = veccopy(vi);
-	}
-	return A;
 }
 
 matrix *rowReduce(matrix* A, node* head){
