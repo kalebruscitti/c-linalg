@@ -177,7 +177,7 @@ double slow_determinant(matrix *M){
 	int i;
 	double det = 0;
 	for (i=0; i<v1->dim; i++){
-		if (v1->vals[0] == 0){continue;}
+		if (v1->vals[i] == 0){continue;}
 		// 1-((i*1)<<1) = (-1)**i
 		det += (1-((i&1)<<1))*(v1->vals[i])*slow_determinant(minor(M, 0, i)); 
 	}
@@ -188,6 +188,7 @@ double determinant(matrix *M){
 	/* Row reduce, compute det of RREF first */ 
 	node *head = computeEROs(M);
 	matrix *R = rowReduce(M, head);
+	printM(R);
 	double det = slow_determinant(R);
 	if (det == 0){
 		return 0;
