@@ -106,10 +106,14 @@ struct matrix* new_matrix(unsigned int ncols, unsigned int nrows){
 	for (i = 0; i < ncols; i++){
 		M->cols[i] = zero_vec;
 	}
+	free_vector(zero_vec);
 	return M;
 }
 
 void free_matrix(struct matrix* M){
+	for (int i=0; i<M->ncols; i++){
+		free_vector(M->cols[i]);
+	}
 	free(M->cols);
 	free(M);
 }
@@ -128,6 +132,7 @@ matrix *matcpy(matrix *M){
     }
     A->cols[i] = veccopy(vi);
   }
+  free_vector(vi);
   return A;
 }
 
@@ -148,6 +153,7 @@ void printM(matrix* M){
 		mi = getrow(M, i);
 		printv(mi);
 		printf("\n");
+		free_vector(mi);
 	}
 }
 

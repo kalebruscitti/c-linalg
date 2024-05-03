@@ -11,27 +11,33 @@ matrix *swaprow(matrix* M, unsigned int i, unsigned int j){
 		M->cols[k]->vals[i] = Mj->vals[k];
 		M->cols[k]->vals[j] = Mi->vals[k];
 	}
+	free_vector(Mi);free_vector(Mj);
 	return M;
 }
 
 matrix *scalerow(matrix* M, unsigned int i, double c){
-	vector* Mi = getrow(M,i);
-	Mi = scalmul(Mi, c);
+	vector* tmp = getrow(M,i);
+	vector* Mi = scalmul(tmp, c);
+	free_vector(tmp);
 	int k;
 	for (k=0; k < M->ncols; k++){
 		M->cols[k]->vals[i] = Mi->vals[k];
 	}	
+	free_vector(Mi);
 	return M;
 }
 
 matrix *addrows(matrix* M, unsigned int i, double c, unsigned int j){
-	vector* Mi = scalmul(getrow(M, i),c);
+	vector* tmp = getrow(M,i);
+	vector* Mi = scalmul(tmp,c);
+	free_vector(tmp);
 	vector* Mj = getrow(M, j);
 	vector* Msum = v_add(Mi,Mj);
 	int k;
 	for (k=0; k < M->ncols; k++){
 		M->cols[k]->vals[j] = Msum->vals[k];
 	}
+	free_vector(Mi);free_vector(Mj);free_vector(Msum);
 	return M;
 }
 
@@ -89,6 +95,7 @@ node *computeEROs(matrix *M){
 					op.rows[0]=j;
 					op.scalar = (1/val);
 					EROlist = append(op, EROlist);
+					printOP(op);
 					A = scalerow(A,j,(1/val));
 				}
 				if (j!= 0 && j!= pivot){
@@ -96,6 +103,7 @@ node *computeEROs(matrix *M){
 					op.rows[0] = pivot;
 					op.rows[1] = j;
 					EROlist = append(op, EROlist);
+					printOP(op);
 					A = swaprow(A, pivot, j);
 				}
 				/* since we moved things, refresh Ai */
@@ -109,15 +117,16 @@ node *computeEROs(matrix *M){
 						op.rows[1] = k;
 						op.scalar = -1*val;
 						EROlist = append(op, EROlist);
+						printOP(op);
 						A = addrows(A, pivot, -1*val, k);
 					}
 				}
 				pivot++;
 				break;
 			}
-
 		}	
 	}
+	free_matrix(A);
 	return EROlist;
 }
 
@@ -176,10 +185,12 @@ double slow_determinant(matrix *M){
 	vector *v1 = M->cols[0];
 	int i;
 	double det = 0;
+	matrix *M0i;
 	for (i=0; i<v1->dim; i++){
 		if (v1->vals[i] == 0){continue;}
 		// 1-((i*1)<<1) = (-1)**i
-		det += (1-((i&1)<<1))*(v1->vals[i])*slow_determinant(minor(M, 0, i)); 
+		M0i = minor(M,0,i); 
+		det += (1-((i&1)<<1))*(v1->vals[i])*slow_determinant(M0i); 
 	}
 	return det;
 }
@@ -188,8 +199,8 @@ double determinant(matrix *M){
 	/* Row reduce, compute det of RREF first */ 
 	node *head = computeEROs(M);
 	matrix *R = rowReduce(M, head);
-	printM(R);
 	double det = slow_determinant(R);
+	free_matrix(R);
 	if (det == 0){
 		return 0;
 	}

@@ -33,17 +33,29 @@ node *append(mat_ERO op, node *list){
 		head = head->next;
 		k++;
 	}
-	node *n_node = malloc(sizeof(node));
-	n_node->op = op;
-	n_node->next = NULL;
-	n_node->index = k+1;
 	if (k==0){
-		list = n_node;
+		list->op = op; 
+		list->index = k+1;
 	}
 	else{
+		node *n_node = malloc(sizeof(node));
 		head->next = n_node;
+		n_node->op = op;
+		n_node->next = NULL;
+		n_node->index = k+1;
+
 	}
 	return list;
+}
+
+void free_list(node *list){
+	node *tmp;
+	while (list!=NULL){
+		tmp = list;
+		list = list->next;
+		tmp->next = NULL;
+		free(tmp);
+	}
 }
 
 void printOP(mat_ERO op){
