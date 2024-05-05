@@ -83,6 +83,19 @@ vector* scalmul(vector* v, double c){
 	return w;
 }
 
+int vecEqual(vector *v, vector *w){
+	int equal = 1;
+	if (v->dim != w->dim){
+		return 0;
+	}
+	for (int i=0; i<v->dim; i++){
+		if (v->vals[i] != w->vals[i]){
+			equal = 0;
+		}
+	}
+	return equal;
+}
+
 /*
 	Matrices, implemented as arrays of their columns.
 */
@@ -120,20 +133,23 @@ void free_matrix(struct matrix* M){
 
 matrix *matcpy(matrix *M){
   matrix *A = new_matrix(M->ncols, M->nrows);
-  int i;
-  int j;
-  vector *Mi;
-  vector *vi = new_vector(M->nrows);
-  for (i=0; i<M->ncols; i++){
-    Mi = M->cols[i];
-    for (j=0; j<Mi->dim; j++){
-      vi->vals[j]=Mi->vals[j];
-      
-    }
-    A->cols[i] = veccopy(vi);
+  vector *ai;
+  for (int i = 0; i < A->ncols; i++){
+  	ai = veccopy(M->cols[i]);
+	A->cols[i] = ai;
   }
-  free_vector(vi);
   return A;
+}
+
+int matEqual(matrix *A, matrix *B){
+	int equal = 1;
+	if(A->ncols != B->ncols || A->nrows != B->nrows){
+		return 0;
+	}
+	for (int i=0; i<A->ncols; i++){
+		equal *= vecEqual(A->cols[i], B->cols[i]); 
+	}
+	return equal;
 }
 
 struct vector* getrow(matrix* M, int k){
@@ -159,7 +175,7 @@ void printM(matrix* M){
 
 struct matrix* matmul(matrix* A, matrix* B){
 	if (A->ncols != B->nrows){
-		printf("A's # of cols must equal B's # of rowss!");
+		printf("A's # of cols must equal B's # of rows!\n");
 		return NULL;
 	}
 	matrix* C = new_matrix(B->ncols, A->nrows);

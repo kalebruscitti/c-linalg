@@ -4,8 +4,8 @@
 void main(){
 	srand(time(NULL));
 	int N = 1;
-	int ncols = 2;
-	int nrows = 2;
+	int ncols = 3;
+	int nrows = 3;
 	int i;
 	matrix *M;
 	node *list;

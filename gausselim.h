@@ -95,7 +95,6 @@ node *computeEROs(matrix *M){
 					op.rows[0]=j;
 					op.scalar = (1/val);
 					EROlist = append(op, EROlist);
-					printOP(op);
 					A = scalerow(A,j,(1/val));
 				}
 				if (j!= 0 && j!= pivot){
@@ -103,7 +102,6 @@ node *computeEROs(matrix *M){
 					op.rows[0] = pivot;
 					op.rows[1] = j;
 					EROlist = append(op, EROlist);
-					printOP(op);
 					A = swaprow(A, pivot, j);
 				}
 				/* since we moved things, refresh Ai */
@@ -117,7 +115,6 @@ node *computeEROs(matrix *M){
 						op.rows[1] = k;
 						op.scalar = -1*val;
 						EROlist = append(op, EROlist);
-						printOP(op);
 						A = addrows(A, pivot, -1*val, k);
 					}
 				}
