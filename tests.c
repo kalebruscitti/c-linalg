@@ -1,8 +1,8 @@
 #include "lib/linalg.h"
 
 /* Test Parameters */
-#define NTRIALS 10;
-#define NTESTS 6;
+#define NTRIALS 10
+#define NTESTS 8
 
 void main(){
 	int N_passes = NTESTS;
@@ -73,6 +73,26 @@ void main(){
 		N_passes -= 1;
 	}
 
+    /* T3 Gaussian Elimination */
+    matrix *Brr = rowReduce(B, computeEROs(B));
+    matrix *Id2 = new_matrix(2,2);
+    vector *e1 = new_vector(2);
+    vector *e2 = new_vector(2);
+    e1->vals[0]=1.; e1->vals[1]=0.;
+    e2->vals[0]=0.; e2->vals[1]=1.;
+    Id2->cols[0] = e1; Id2->cols[1]=e2;
+    if (matEqual(Brr, Id2) != 1){
+        printf("Test 3.1 'rowReduce' failed. \n");
+        N_passes -= 1;
+    }
+
+    double det = determinant(B);
+    if (det != -6.){
+        printf("Test 3.2 'determinant' failed. \n");
+        N_passes -= 1;
+    }
+    
+    
 	/* Results */
 	if (N_passes == NTESTS){
 		printf("All tests passed!\n");
