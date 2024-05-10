@@ -1,12 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "linalg.h"
 
-typedef struct vector{
-	unsigned int dim;
-	double *vals;
-} vector;
-
-// Constructor?
 struct vector* new_vector(unsigned int dim){
 	if (dim == 0){
 		printf("Dimension of a vector cannot be zero!");
@@ -22,7 +15,6 @@ struct vector* new_vector(unsigned int dim){
 	return v;
 }
 
-// Free memory function
 void free_vector(struct vector *v){
 	free(v->vals);
 	free(v);
@@ -99,12 +91,6 @@ int vecEqual(vector *v, vector *w){
 /*
 	Matrices, implemented as arrays of their columns.
 */
-typedef struct matrix{
-	unsigned int ncols;
-	unsigned int nrows;
-	vector* *cols;
-} matrix;
-
 struct matrix* new_matrix(unsigned int ncols, unsigned int nrows){
 	if (ncols == 0 || nrows == 0){
 		printf("Dimensions of a matrix must be non-zero!");

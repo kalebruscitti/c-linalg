@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include "gausselim.h"
+#include "lib/linalg.h"
 
 void main(){
 	/* Test Parameters */
@@ -13,7 +10,7 @@ void main(){
 	vector *x = new_vector(3);
 	x->vals[0]=1.; x->vals[1]=2.5; x->vals[2]=0.;
 	vector *y = veccopy(x);
-	// Test that y isn't just a pointer to the same addr as x:
+	// Test that y isn't just a pointer to the same addr as:vs x:
 	x->vals[1] = 3.; 
 	if (y->vals[1] != 2.5){
 		printf("Test 1.1: 'veccopy' failed. \n");

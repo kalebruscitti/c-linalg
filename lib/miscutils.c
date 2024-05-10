@@ -1,5 +1,4 @@
-#include<stdlib.h>
-#include"gausselim.h"
+#include "linalg.h"
 
 vector *random_vector(unsigned int dim){
 	struct vector *v = calloc(1, sizeof(*v));

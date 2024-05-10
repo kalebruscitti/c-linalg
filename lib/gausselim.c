@@ -1,7 +1,4 @@
-#include"matrices.h"
-#include"row_ops.h"
-#include<stdbool.h>
-#include<stdio.h>
+#include "linalg.h"
 
 matrix *swaprow(matrix* M, unsigned int i, unsigned int j){
 	vector* Mi = getrow(M, i);
