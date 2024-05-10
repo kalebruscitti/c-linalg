@@ -1,16 +1,17 @@
 #include "lib/linalg.h"
 
+/* Test Parameters */
+#define NTRIALS 10;
+#define NTESTS 6;
+
 void main(){
-	/* Test Parameters */
-	int N_trials = 10;
-	int N_tests = 6;
-	int N_passes = N_tests;
+	int N_passes = NTESTS;
 
 	/* T1: Memory Operations */
 	vector *x = new_vector(3);
 	x->vals[0]=1.; x->vals[1]=2.5; x->vals[2]=0.;
 	vector *y = veccopy(x);
-	// Test that y isn't just a pointer to the same addr as:vs x:
+	// Test that y isn't just a pointer to the same addr as x
 	x->vals[1] = 3.; 
 	if (y->vals[1] != 2.5){
 		printf("Test 1.1: 'veccopy' failed. \n");
@@ -73,9 +74,9 @@ void main(){
 	}
 
 	/* Results */
-	if (N_passes == N_tests){
+	if (N_passes == NTESTS){
 		printf("All tests passed!\n");
 	} else {
-		printf("%d/%d tests passed. \n", N_passes,N_tests);
+		printf("%d/%d tests passed. \n", N_passes,NTESTS);
 	}
 }
