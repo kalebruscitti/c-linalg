@@ -2,7 +2,7 @@
 
 /* Test Parameters */
 #define NTRIALS 10
-#define NTESTS 8
+#define NTESTS 9
 
 void main(){
 	int N_passes = NTESTS;
@@ -90,13 +90,18 @@ void main(){
     if (det != -6.){
         printf("Test 3.2 'determinant' failed. \n");
         N_passes -= 1;
+        N_passes -= 1;
+    } 
+
+    matrix * Binv = inverse(B);
+    if (matEqual(matmul(B,Binv), Id2) != 1){
+        printf("Test 3.3 'inverse' failed. \n");
     }
-    
     
 	/* Results */
 	if (N_passes == NTESTS){
 		printf("All tests passed!\n");
 	} else {
-		printf("%d/%d tests passed. \n", N_passes,NTESTS);
+		printf("%d/%d tests passed. \n", N_passes, NTESTS);
 	}
 }
